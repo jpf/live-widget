@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Okta Sign-In Widget Live Example</title>
+
+  <!-- Latest CDN production Javascript and CSS: 2.7.0 -->
+  <script src="https://ok1static.oktacdn.com/assets/js/sdk/okta-signin-widget/2.7.0/js/okta-sign-in.min.js" type="text/javascript"></script>
+  <link href="https://ok1static.oktacdn.com/assets/js/sdk/okta-signin-widget/2.7.0/css/okta-sign-in.min.css" type="text/css" rel="stylesheet"/>
+  <!-- Theme file: Customize or replace this file if you want to override our default styles -->
+  <link href="https://ok1static.oktacdn.com/assets/js/sdk/okta-signin-widget/2.7.0/css/okta-theme.css" type="text/css" rel="stylesheet"/>
+
+  <script src="//cdnjs.cloudflare.com/ajax/libs/codemirror/5.37.0/codemirror.js"></script>
+  <script src="//cdnjs.cloudflare.com/ajax/libs/codemirror/5.37.0/mode/javascript/javascript.js"></script>
+  <script src="//cdnjs.cloudflare.com/ajax/libs/codemirror/5.37.0/addon/edit/matchbrackets.js"></script>
+  <script src="//cdnjs.cloudflare.com/ajax/libs/codemirror/5.37.0/addon/lint/lint.js"></script>
+  <script src="//cdnjs.cloudflare.com/ajax/libs/codemirror/5.37.0/addon/lint/javascript-lint.js"></script>
+  <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/codemirror/5.37.0/codemirror.css">
+  <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/codemirror/5.37.0/addon/lint/lint.css">
+  <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/codemirror/5.37.0/theme/neat.css" integrity="sha256-WMLC5bxpwvLiouYZo3maC9cKh1TBNxBNqrSjnlP0JQM=" crossorigin="anonymous" />
+
+  <script src="//cdnjs.cloudflare.com/ajax/libs/jshint/2.9.5/jshint.min.js"></script>
+
+  <style>
+    #main-container {
+      width: 100%
+      overflow: hidden;
+    }
+
+    #widget-container {
+      width: 410px;
+      float: left;
+      margin-left: 20px;
+    }
+
+    #editor-container {
+      margin-left: 457px;
+      margin-top: 10px;
+      padding-top: 98px;
+    }
+
+    .CodeMirror {
+      height: 540px;
+    }
+
+    body {
+      background-image: url(/static/img/SFbayBridge.jpg);
+      background-repeat: no-repeat;
+      background-size: 100%;
+      background-position:
+      center center;
+    }
+  </style>
+</head>
+<body>
+  <div id="main-container">
+    <div id="widget-container"></div>
+    <div id="editor-container">
+      <textarea id="editor">
+signInWidget = new OktaSignIn({ // Caution editing this section as you may break the demo.
+    baseUrl: 'https://oktaprise.okta.com',
+    clientId: '0oa1e1p5vi7Jm2nif1d8',
+    redirectUri: 'https://widget.oktaprise.com:443/oauth2/callback',
+    authParams: {
+        issuer: 'https://oktaprise.okta.com/oauth2/aus1e1p1bmlFOMlLc1d8',
+        responseType: ['id_token', 'token'],
+        scopes: ['openid', 'email', 'profile'],
+    },
+    // Enable or disable widget functionality with the following options. Some of these features require additional configuration in your Okta admin settings. Detailed information can be found here: https://github.com/okta/okta-signin-widget#okta-sign-in-widget
+    features: {
+        router: true,                          // Leave this set to true for the API demo
+        registration: true,                    // Enable self-service registration flow
+        rememberMe: true,                      // Setting to false will remove the checkbox to save username
+        //multiOptionalFactorEnroll: true,     // Allow users to enroll in multiple optional factors before finishing the authentication flow.
+        //selfServiceUnlock: true,             // Will enable unlock in addition to forgotten password
+        //smsRecovery: true,                   // Enable SMS-based account recovery
+        //callRecovery: true,                  // Enable voice call-based account recovery
+    },
+    // Look and feel changes
+    logo: '/static/img/gear_half.png',         // This demo includes other logos. Try: [logo_widgico.png, gear_logo.png, gear_half.png]
+    language: 'en',                            // Try: [fr, de, es, ja, zh-CN] Full list: https://github.com/okta/okta-signin-widget#language-and-text
+    i18n: {
+        //Overrides default text when using English. Override other languages by adding additional sections.
+        'en': {
+            'primaryauth.title': 'Sign In',    // Changes the sign in text
+            'primaryauth.submit': 'Sign In',   // Changes the sign in button
+            //'primaryauth.username.tooltip': 'Enter your APIDemo ID', // Changes the tooltip for username
+            //'primaryauth.password.tooltip': 'Your APIDemo Password', // Changes the tooltip for password
+            // More e.g. [primaryauth.username.placeholder,  primaryauth.password.placeholder, needhelp, etc.]. Full list here: https://github.com/okta/okta-signin-widget/blob/master/packages/@okta/i18n/dist/properties/login.properties
+        }
+    },
+});
+
+function widgetSuccessCallback(res) {
+        var key = '';
+        if (res[0]) {
+            key = Object.keys(res[0])[0];
+            oktaSignIn.tokenManager.add(key, res[0]);
+        }
+        if (res[1]) {
+            key = Object.keys(res[1])[0];
+            oktaSignIn.tokenManager.add(key, res[1]);
+        }
+        if (res.status === 'SUCCESS') {
+            get_profile(key, oktaSignIn.tokenManager.get(key));
+        }
+}
+
+function widgetErrorCallback (err) {
+}
+
+signInWidget.renderEl({el: '#widget-container'}, widgetSuccessCallback, widgetErrorCallback); </textarea>
+    </div>
+  </div>
+<script src="static/js/oktaSignInWidgetLive.js"></script>
+</body>
+</html>
