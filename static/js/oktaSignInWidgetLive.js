@@ -2,6 +2,10 @@ var typingDelayTimer = false;
 var returnFocusToEditorDelay     = 200; // ms
 var refreshWidgetFromEditorDelay = 800; // ms
 
+CodeMirror.defineInitHook(function(cm) {
+  cm.on("changes", editHook);
+});
+
 var editor = CodeMirror.fromTextArea(document.getElementById("editor"), {
   lineNumbers: true,
   mode: "javascript",
@@ -18,10 +22,6 @@ eval(editor.getValue());
 // Return control back to the editor after the Okta Sign-In Widget steals it
 signInWidget.on('pageRendered', function (data) {
   setTimeout(function(){ editor.focus(); }, returnFocusToEditorDelay);
-});
-
-CodeMirror.defineInitHook(function(cm) {
-  cm.on("changes", editHook);
 });
 
 function editHook(codeMirror) {
