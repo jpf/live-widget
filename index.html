@@ -17,11 +17,23 @@
   <script src="//cdnjs.cloudflare.com/ajax/libs/codemirror/5.37.0/addon/edit/matchbrackets.js"></script>
   <script src="//cdnjs.cloudflare.com/ajax/libs/codemirror/5.37.0/addon/lint/lint.js"></script>
   <script src="//cdnjs.cloudflare.com/ajax/libs/codemirror/5.37.0/addon/lint/javascript-lint.js"></script>
+  <script src="//cdnjs.cloudflare.com/ajax/libs/codemirror/5.37.0/addon/lint/css-lint.js"></script>
   <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/codemirror/5.37.0/codemirror.css">
   <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/codemirror/5.37.0/addon/lint/lint.css">
   <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/codemirror/5.37.0/theme/neat.css" integrity="sha256-WMLC5bxpwvLiouYZo3maC9cKh1TBNxBNqrSjnlP0JQM=" crossorigin="anonymous" />
 
   <script src="//cdnjs.cloudflare.com/ajax/libs/jshint/2.9.5/jshint.min.js"></script>
+
+  <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+  <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+  <link rel="stylesheet" href="static/css/tabs.css">
+
+
+  <script>
+    $( function() {
+     $( '#tabs' ).tabs();
+    });
+  </script>
 
   <style>
     #main-container {
@@ -42,7 +54,7 @@
     }
 
     .CodeMirror {
-      height: 540px;
+      height: 507px;
     }
 
     body {
@@ -58,8 +70,14 @@
   <div id="main-container">
     <div id="widget-container"></div>
     <div id="editor-container">
-      <textarea id="editor">
-signInWidget = new OktaSignIn({ // Caution editing this section as you may break the demo.
+      <div id="tabs">
+      <ul class="tabs">
+        <li><a href="#js-tab">JS</a></li>
+        <li><a href="#css-tab">CSS</a></li>
+      </ul>
+      <div id="js-tab">
+        <textarea id="javascript-editor">
+    signInWidget = new OktaSignIn({ // Caution editing this section as you may break the demo.
     baseUrl: 'https://oktaprise.okta.com',
     clientId: '0oa1e1p5vi7Jm2nif1d8',
     redirectUri: 'https://widget.oktaprise.com:443/oauth2/callback',
@@ -112,6 +130,25 @@ function widgetErrorCallback (err) {
 }
 
 signInWidget.renderEl({el: '#widget-container'}, widgetSuccessCallback, widgetErrorCallback); </textarea>
+      </div>
+      <div id="css-tab">
+      <textarea id="css-editor">
+#okta-sign-in.auth-container.main-container {
+  /* -- Fonts and Text Colors -- */
+  font-family: "montserrat", Arial, Helvetica, sans-serif;
+  color: #777;
+}
+
+#okta-sign-in.auth-container h2,
+#okta-sign-in.auth-container h3 {
+  /* -- Fonts and Text Colors -- */
+  font-weight: bold;
+  color: #5e5e5e;
+}
+
+</textarea>
+      </div>
+      </div>
     </div>
   </div>
 <script src="static/js/oktaSignInWidgetLive.js"></script>
