@@ -72,6 +72,7 @@ function updateWidget(codeMirror) {
   case "javascript":
     signInWidget.remove();
     eval(codeMirror.getValue());
+    ga('send', 'event', 'demo', 'logo-change', signInWidgetConfig.logo);
     break;
   case "css":
     evalCss(codeMirror.getValue());
