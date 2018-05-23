@@ -3,6 +3,8 @@ var returnFocusToEditorDelay     = 200; // ms
 var refreshWidgetFromEditorDelay = 800; // ms
 var currentEditor = false;
 
+var sass = new Sass();
+
 CodeMirror.defineInitHook(function(cm) {
   cm.on("changes", editHook);
 });
@@ -19,7 +21,7 @@ var jsEditor = CodeMirror.fromTextArea(document.getElementById("javascript-edito
 
 var cssEditor = CodeMirror.fromTextArea(document.getElementById("css-editor"), {
   lineNumbers: true,
-  mode: "css",
+  mode: "sass",
   gutters: ["CodeMirror-lint-markers"],
   lint: true,
   matchBrackets: true,
@@ -45,7 +47,7 @@ function evalCss(content) {
 eval(jsEditor.getValue());
 
 createStyleTag();
-evalCss(cssEditor.getValue());
+evalSass(cssEditor.getValue());
 
 
 // Return control back to the editor after the Okta Sign-In Widget steals it
@@ -74,9 +76,81 @@ function updateWidget(codeMirror) {
     eval(codeMirror.getValue());
     ga('send', 'event', 'demo', 'logo-change', signInWidgetConfig.logo);
     break;
-  case "css":
-    evalCss(codeMirror.getValue());
+  case "sass":
+    evalSass(codeMirror.getValue());
     break;
   }
 
 }
+
+
+// HTTP requests are made relative to worker
+var base = '../../static/sass';
+
+// the directory files should be made available in
+var directory = '';
+
+// the files to load (relative to both base and directory)
+var files = [
+  '_base.scss',
+  '_container.scss',
+  '_fonts.scss',
+  '_helpers.scss',
+  '_ie.scss',
+  '_layout.scss',
+  '_variables.scss',
+  'common/admin/icons/_all.scss',
+  'common/admin/icons/_classes-social.scss',
+  'common/admin/icons/_classes.scss',
+  'common/admin/icons/_functions.scss',
+  'common/admin/icons/_variables-theme.scss',
+  'common/admin/icons/_variables-unicode-social.scss',
+  'common/admin/icons/_variables-unicode.scss',
+  'common/admin/modules/infobox/_infobox.scss',
+  'common/enduser/_helpers.scss',
+  'common/enduser/_reset.scss',
+  'common/enduser/_responsive-variables.scss',
+  'common/foo.scss',
+  'common/shared/helpers/_all.scss',
+  'common/shared/helpers/_mixins.scss',
+  'common/shared/helpers/_variables.scss',
+  'common/shared/o-forms/_o-form-variable.scss',
+  'common/shared/o-forms/_o-form.scss',
+  'modules/_accessibility.scss',
+  'modules/_app-login-banner.scss',
+  'modules/_beacon.scss',
+  'modules/_btns.scss',
+  'modules/_consent.scss',
+  'modules/_enroll.scss',
+  'modules/_factors-dropdown.scss',
+  'modules/_footer.scss',
+  'modules/_forgot-password.scss',
+  'modules/_forms.scss',
+  'modules/_header.scss',
+  'modules/_infobox.scss',
+  'modules/_mfa-challenge-forms.scss',
+  'modules/_okta-footer.scss',
+  'modules/_qtip.scss',
+  'modules/_registration.scss',
+  'modules/_social.scss',
+  'okta-sign-in.scss',
+  'okta-theme.scss',
+  'widgets/_chosen.scss',
+  'widgets/_jquery.qtip.scss',
+  'widgets/_mega-drop-down.scss',
+];
+
+function evalSass(input) {
+  sass.compile(input, function(result) {
+    console.log("SASS compiled");
+    document.getElementById('css-style').remove();
+    createStyleTag();
+    var style = document.getElementById('css-style');
+    style.innerHTML = result.text;
+  });
+}
+
+// register the files to be loaded when required
+sass.preloadFiles(base, directory, files, function() {
+  console.log('SAAS files loaded')
+});
