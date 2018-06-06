@@ -62,6 +62,27 @@ function editHook(codeMirror) {
   typingDelayTimer = setTimeout(function(){ updateWidget(codeMirror); }, refreshWidgetFromEditorDelay);
 }
 
+function updateColorsForLogo(url) {
+  console.log("Got: " + url);
+  url = "http:" + url;
+  Vibrant.from(url).getPalette((err, palette) => {
+    console.log("got palette:");
+    console.log(palette);
+    mySass = cssEditor.getValue();
+    logoVibrantColor = "rgb(" + palette["Vibrant"]._rgb.join(', ') + ");";
+    buttonBgColor = "$primary-button-bg-color: " + logoVibrantColor;
+    mySass = mySass.replace(/\$primary-button-bg-color:.*?;/, buttonBgColor);
+
+    if(palette['LightVibrant']) {
+      mahColor = "rgb(" + palette["LightVibrant"]._rgb.join(', ') + ");";
+      mahButtonBgColor = "$light-text-color: " + mahColor;
+      mySass = mySass.replace(/\$light-text-color:.*?;/, mahButtonBgColor);
+    }
+    cssEditor.getDoc().setValue(mySass);
+    evalSass(cssEditor.getValue());
+  });
+}
+
 function updateWidget(codeMirror) {
   var mode = codeMirror.options.mode;
   var linterHasError = (codeMirror.state.lint.marked.length !== 0);
@@ -75,6 +96,7 @@ function updateWidget(codeMirror) {
     signInWidget.remove();
     eval(codeMirror.getValue());
     ga('send', 'event', 'demo', 'logo-change', signInWidgetConfig.logo);
+    updateColorsForLogo(signInWidgetConfig.logo);
     break;
   case "sass":
     evalSass(codeMirror.getValue());
