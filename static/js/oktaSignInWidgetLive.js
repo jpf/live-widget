@@ -63,11 +63,7 @@ function editHook(codeMirror) {
 }
 
 function updateColorsForLogo(url) {
-  console.log("Got: " + url);
-  url = "http:" + url;
-  Vibrant.from(url).getPalette((err, palette) => {
-    console.log("got palette:");
-    console.log(palette);
+  Vibrant.from("http:" + url).getPalette((err, palette) => {
     mySass = cssEditor.getValue();
     logoVibrantColor = "rgb(" + palette["Vibrant"]._rgb.join(', ') + ");";
     buttonBgColor = "$primary-button-bg-color: " + logoVibrantColor;
@@ -102,9 +98,7 @@ function updateWidget(codeMirror) {
     evalSass(codeMirror.getValue());
     break;
   }
-
 }
-
 
 // HTTP requests are made relative to worker
 var base = '../../static/sass';
