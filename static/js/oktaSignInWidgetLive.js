@@ -63,7 +63,7 @@ function editHook(codeMirror) {
 }
 
 function updateColorsForLogo(url) {
-  Vibrant.from("http:" + url).getPalette((err, palette) => {
+  Vibrant.from("http:" + url).getPalette(function (err, palette) {
     mySass = cssEditor.getValue();
     logoVibrantColor = "rgb(" + palette["Vibrant"]._rgb.join(', ') + ");";
     buttonBgColor = "$primary-button-bg-color: " + logoVibrantColor;
